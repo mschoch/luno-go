@@ -20,7 +20,7 @@ func TestSessionCrud(t *testing.T) {
 	}
 	lunoClient := NewClient(apiKey, secretKey)
 
-	// try to get a non-existant session
+	// try to get a non-existent session
 	_, err = lunoClient.Sessions.Get("sess_xxxxxxxxxxxxxxxxxxxxxxxx")
 	if !IsErrorCode(err, ErrCodeSessionNotFound) {
 		t.Errorf("expected error session not found, got %v", err)
