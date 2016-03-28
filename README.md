@@ -2,6 +2,8 @@
 
 Unofficial Go library for [luno.io](https://luno.io)
 
+The API is not yet stable, as I have not yet tried to build an app with it yet.  But the core operations seem to work correctly.
+
 ## Status
 
 [![GoDoc](https://godoc.org/github.com/mschoch/luno-go?status.svg)](https://godoc.org/github.com/mschoch/luno-go)
