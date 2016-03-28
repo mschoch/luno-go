@@ -96,7 +96,10 @@ func (c *Client) request(method, endpoint string, params url.Values, body []byte
 	req.Header.Set("Content-Type", "application/json")
 
 	// sign and add signature to request
-	sign := c.signRequest(req, body)
+	sign, err := c.signRequest(req, body)
+	if err != nil {
+		return nil, fmt.Errorf("error signing request: %v", err)
+	}
 	req.URL.Opaque += "&sign=" + sign
 	if Log != nil && LogRequestURL {
 		Log.Printf("%s request: %s", req.Method, req.URL.Opaque)
@@ -125,12 +128,15 @@ func (c *Client) timestamp() string {
 	return now.Format(time.RFC3339)
 }
 
-func (c *Client) signRequest(req *http.Request, body []byte) string {
+func (c *Client) signRequest(req *http.Request, body []byte) (string, error) {
 	msg := req.Method + ":" + req.URL.Opaque
 	if len(body) > 0 {
 		msg += ":" + string(body)
 	}
 	mac := hmac.New(sha512.New, []byte(c.secretKey))
-	mac.Write([]byte(msg))
-	return hex.EncodeToString(mac.Sum(nil))
+	_, err := mac.Write([]byte(msg))
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(mac.Sum(nil)), nil
 }
